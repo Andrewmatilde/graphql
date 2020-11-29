@@ -137,6 +137,10 @@ func (c *Client) runWithJSON(ctx context.Context, req *Request, resp interface{}
 		return errors.Wrap(err, "reading body")
 	}
 	c.logf("<< %s", buf.String())
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf(" bad requests : Status Code %d , body : %s ",
+			res.StatusCode, buf.String())
+	}
 	if err := json.NewDecoder(&buf).Decode(&gr); err != nil {
 		if res.StatusCode != http.StatusOK {
 			return fmt.Errorf("graphql: server returned a non-200 status code: %v", res.StatusCode)
